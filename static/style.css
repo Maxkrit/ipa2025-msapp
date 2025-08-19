@@ -1,0 +1,25 @@
+body {
+    background-color: rgb(187, 219, 255);
+}
+.router-form p {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+/* ใช้ flex ให้ input และปุ่มอยู่ในบรรทัดเดียว */
+.router-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ช่องว่างระหว่าง input และปุ่ม */
+}
+
+/* ทำให้แต่ละ p ย่อขนาดพอดี */
+.router-form p {
+  margin: 0;
+}
+
+/* ปุ่ม Add อยู่ในบรรทัดเดียวกับ input */
+.router-form button {
+  height: 30px; /* ปรับขนาดปุ่มตามความเหมาะสม */
+}
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Register Router</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+  <h1>Register Router</h1>
+
+  <form method="POST" action="/add" class="router-form">
+    <p>
+      IP: <input type="text" name="ip" required />
+    </p>
+    <p>
+      Username: <input type="text" name="yourname" required />
+    </p>
+    <p>
+      Password: <input type="text" name="message" required />
+    </p>
+    <button type="submit">Add</button>
+  </form>
+
+
+  <h2>Routers List</h2>
+  <ul>
+    {% for comment in data %}
+    <li>
+      {{ comment.ip }} - {{ comment.yourname }}
+      <form method="POST" action="{{ url_for('delete_comment', id=comment._id) }}" style="display:inline">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
