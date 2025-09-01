@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Router</title>
+</head>
+<body>
+    <h1>Register Router</h1>
+    <form method="POST" action="/add">
+        <input name="ip" placeholder="Router IP" required />
+        <input name="username" placeholder="Username" required />
+        <input name="password" placeholder="Password" required />
+        <button type="submit">Add</button>
+    </form>
+
+    <h2>Routers List</h2>
+    <ul>
+        {% for router in routers %}
+            <li>
+                <!-- เราจะกลับมาทำลิงก์ใน Stage 5 -->
+                {{ router.ip }} - {{ router.username }}
+                <form method="POST" action="/delete/{{ router._id }}" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
