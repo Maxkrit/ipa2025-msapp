@@ -3,6 +3,8 @@ import pika
 import json
 import time
 import sys
+from datetime import datetime
+from pymongo import MongoClient
 from bson import json_util
 
 # Import ฟังก์ชันที่เราสร้างขึ้นจากไฟล์อื่น
@@ -27,6 +29,11 @@ def callback(ch, method, properties, body):
         interface_data = get_interfaces(ip, username, password)
         
         if interface_data:
+            # --- [ เพิ่มตรงนี้ ] ---
+            # แสดงผลลัพธ์ JSON ที่ได้จาก Router ใน Log
+            print(json.dumps(interface_data, indent=2))
+            # --------------------
+
             # 3. เรียกใช้ database client เพื่อบันทึกผลลัพธ์
             save_interface_status(ip, interface_data)
             print(f"  - Successfully stored interface status for {ip}")
@@ -40,6 +47,7 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
     print("-" * 20)
 
+
 def main():
     rabbitmq_host = os.environ.get("RABBITMQ_HOST", "rabbitmq")
     connection = None
@@ -48,7 +56,7 @@ def main():
     for i in range(10):
         try:
             connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
-            print("Worker connected to RabbitMQ successfully!")
+            print(f"Worker connected to RabbitMQ at {rabbitmq_host} successfully!")
             break
         except pika.exceptions.AMQPConnectionError:
             print(f"Worker: RabbitMQ at {rabbitmq_host} not ready, retrying... (Attempt {i+1})")
@@ -64,11 +72,19 @@ def main():
     # บอก RabbitMQ ให้ส่งงานมาให้ worker ทีละ 1 งานเท่านั้น
     channel.basic_qos(prefetch_count=1)
     
-    # เริ่มรอรับ message จาก queue
+    # เริ่มรอรับ message จาก queue และผูกกับฟังก์ชัน callback
     channel.basic_consume(queue='router_jobs', on_message_callback=callback)
 
     print('[*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Interrupted')
+        # Properly exit on Ctrl+C
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
