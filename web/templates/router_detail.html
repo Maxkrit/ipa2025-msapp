@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Router {{ ip }} Details</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { width: 80%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #cccccc; text-align: left; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        hr { margin-top: 20px; }
+        a { text-decoration: none; color: #007bff; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('index') }}">&larr; Back to Routers List</a>
+    <h1>Router: {{ ip }}</h1>
+    <h2>Last 3 Interface Status Updates</h2>
+
+    {% for status in status_list %}
+        <h3>Snapshot at {{ status.timestamp.strftime('%Y-%m-%d %H:%M:%S') }} UTC</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Interface</th>
+                    <th>IP Address</th>
+                    <th>Status</th>
+                    <th>Protocol</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for iface in status.interfaces %}
+                    <tr>
+                        <td>{{ iface.interface }}</td>
+                        <td>{{ iface.ip_address }}</td>
+                        <td>{{ iface.status }}</td>
+                        <td>{{ iface.proto }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No interface status data found for this router yet. The worker might be processing. Please refresh in a moment.</p>
+    {% endfor %}
+</body>
+</html>

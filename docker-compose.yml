@@ -1,9 +1,6 @@
-version: '3.3'
-
 services:
-  # Service สำหรับ Web App (Flask)
   web:
-    image: ipa2025-msapp_web
+    build: ./web
     ports:
       - "8080:8080"
     env_file:
@@ -13,7 +10,6 @@ services:
     networks:
       - app-net
 
-  # Service สำหรับ MongoDB
   mongo:
     image: mongo:6
     ports:
@@ -25,7 +21,6 @@ services:
     networks:
       - app-net
 
-  # Service สำหรับ RabbitMQ
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -34,9 +29,8 @@ services:
     networks:
       - app-net
 
-  # Service สำหรับ Scheduler
   scheduler:
-    image: ipa2025-msapp_scheduler
+    build: ./scheduler
     env_file:
       - .env
     depends_on:
@@ -45,9 +39,8 @@ services:
     networks:
       - app-net
 
-  # Service สำหรับ Worker
   worker:
-    image: ipa2025-msapp_worker
+    build: ./worker
     env_file:
       - .env
     depends_on:
@@ -56,7 +49,6 @@ services:
     networks:
       - app-net
 
-# กำหนด Network และ Volume ที่จะใช้ร่วมกัน
 networks:
   app-net:
 

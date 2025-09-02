@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Register Router</h1>
-    <form method="POST" action="/add">
+    <form method="POST" action="{{ url_for('add_router') }}">
         <input name="ip" placeholder="Router IP" required />
         <input name="username" placeholder="Username" required />
         <input name="password" placeholder="Password" required />
@@ -16,12 +16,16 @@
     <ul>
         {% for router in routers %}
             <li>
-                <!-- เราจะกลับมาทำลิงก์ใน Stage 5 -->
-                {{ router.ip }} - {{ router.username }}
-                <form method="POST" action="/delete/{{ router._id }}" style="display:inline;">
+                <!-- ทำให้ IP เป็นลิงก์ที่คลิกได้ -->
+                <a href="{{ url_for('router_detail', ip=router.ip) }}">{{ router.ip }}</a> - {{ router.username }}
+                
+                <!-- ฟอร์มสำหรับปุ่มลบ -->
+                <form method="POST" action="{{ url_for('delete_router', id=router._id) }}" style="display:inline;">
                     <button type="submit">Delete</button>
                 </form>
             </li>
+        {% else %}
+            <li>No routers found.</li>
         {% endfor %}
     </ul>
 </body>
