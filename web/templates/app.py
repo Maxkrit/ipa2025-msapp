@@ -14,11 +14,13 @@ client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 routers_collection = db["routers"]
 
+
 @app.route("/", methods=["GET"])
 def index():
     # ดึงข้อมูล router ทั้งหมดมาแสดง
     all_routers = list(routers_collection.find())
     return render_template("index.html", routers=all_routers)
+
 
 @app.route("/add", methods=["POST"])
 def add_router():
@@ -27,18 +29,18 @@ def add_router():
     username = request.form.get("username")
     password = request.form.get("password")
     if ip and username and password:
-        routers_collection.insert_one({
-            "ip": ip,
-            "username": username,
-            "password": password
-        })
+        routers_collection.insert_one(
+            {"ip": ip, "username": username, "password": password}
+        )
     return redirect("/")
+
 
 @app.route("/delete/<id>", methods=["POST"])
 def delete_router(id):
     # ลบข้อมูล router ตาม id
     routers_collection.delete_one({"_id": ObjectId(id)})
     return redirect("/")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
