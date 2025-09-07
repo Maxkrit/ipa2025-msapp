@@ -10,6 +10,9 @@ jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
+    
+    # บอกให้ job นี้ใช้ environment ที่ชื่อ production
+    environment: production
 
     steps:
       - name: Check out latest code
@@ -20,10 +23,25 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
+      # --- [ เพิ่ม Step ใหม่ตรงนี้ ] ---
+      - name: Create .env file for production
+        run: |
+          echo "MONGO_INITDB_ROOT_USERNAME=${{ secrets.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+          echo "MONGO_INITDB_ROOT_PASSWORD=${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+          echo "RABBITMQ_DEFAULT_USER=${{ secrets.RABBITMQ_DEFAULT_USER }}" >> .env
+          echo "RABBITMQ_DEFAULT_PASS=${{ secrets.RABBITMQ_DEFAULT_PASS }}" >> .env
+          
+          # สร้าง MONGO_URI โดยใช้ชื่อ service 'mongo'
+          echo "MONGO_URI=mongodb://${{ secrets.MONGO_INITDB_ROOT_USERNAME }}:${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}@mongo:27017/" >> .env
+          echo "DB_NAME=ipa2025_db" >> .env
+          
+          echo "--- Created .env file ---"
+          cat .env
+          echo "--------------------------"
+      # --------------------------------
+
       - name: Deploy Application with Docker Compose
         run: |
-          # Pull latest images from Docker Hub
           docker compose pull
-          # Start services using prod override file
           docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
