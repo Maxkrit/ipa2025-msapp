@@ -36,10 +36,10 @@ jobs:
 
       - name: Build & Push Docker Images
         run: |
-          docker build -t 13d4c/web:latest ./web
-          docker build -t 13d4c/scheduler:latest ./scheduler
-          docker build -t 13d4c/worker:latest ./worker
+          docker build -t it66070007/web:latest ./web
+          docker build -t it66070007/scheduler:latest ./scheduler
+          docker build -t it66070007/worker:latest ./worker
           
-          docker push 13d4c/web:latest
-          docker push 13d4c/scheduler:latest
-          docker push 13d4c/worker:latest
+          docker push it66070007/web:latest
+          docker push it66070007/scheduler:latest
+          docker push it66070007/worker:latest
