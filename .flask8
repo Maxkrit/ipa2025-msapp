@@ -1,10 +1,21 @@
 [flake8]
-# กำหนดความยาวสูงสุดของบรรทัดให้ตรงกับ black
+# ความยาวสูงสุดของบรรทัดให้ตรงกับ black
 max-line-length = 88
 
-# [สำคัญ] บอกให้ flake8 ไม่ต้องเข้าไปเช็คในโฟลเดอร์เหล่านี้
+# ไม่ต้องเช็คในโฟลเดอร์พวกนี้
 exclude =
     .git,
     __pycache__,
     venv,
-    .venv
+    .venv,
+    migrations
+
+# ignore rule ที่ black จัด format แล้วไม่ตรงกับ flake8
+extend-ignore =
+    E203,  # whitespace before ':'
+    E266,  # too many leading '#' for block comment
+    E501,  # line too long (black จัดการให้แล้ว)
+    W503,  # line break before binary operator
+    F403,  # 'from module import *' used
+    F401   # module imported but unused
+#
